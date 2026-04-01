@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import ContractGenerator from './pages/ContractGenerator';
+import ThankYouPage from './pages/ThankYouPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/gerador-contrato" element={<ContractGenerator />} />
+            <Route path="/obrigado" element={<ThankYouPage />} />
           </Routes>
         </main>
         <Footer />

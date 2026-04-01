@@ -1,8 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 import { ContractData } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+// Helper function to safely get environment variable in potential browser context
+const getApiKey = () => {
+  try {
+    // This allows the code to run in a browser without crashing on 'process is not defined'
+    // The build system or runtime must provide process.env.API_KEY
+    return typeof process !== 'undefined' && process.env ? process.env.API_KEY : '';
+  } catch (e) {
+    return '';
+  }
+};
+
+const apiKey = getApiKey();
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const generateContractText = async (data: ContractData): Promise<string> => {
   const model = 'gemini-3-flash-preview';
@@ -93,6 +104,6 @@ export const generateContractText = async (data: ContractData): Promise<string> 
     return response.text || "Erro ao gerar o contrato. Tente novamente.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Erro ao conectar com a IA. Verifique sua chave de API ou tente mais tarde.";
+    return "Erro ao conectar com a IA. Verifique se a chave de API está configurada no ambiente.";
   }
 };

@@ -50,18 +50,13 @@ const Header: React.FC = () => {
               <Link to="/" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Voltar ao Início</Link>
             )}
             
-            <Link 
-              to="/gerador-contrato" 
-              className="px-5 py-2.5 rounded-2xl border border-white/10 text-white text-xs font-bold hover:bg-white/5 transition-all"
-            >
-              Gerar Contrato IA
-            </Link>
+            {/* Botão Gerar Contrato ocultado conforme solicitação */}
 
             <button 
               onClick={() => scrollToSection('pricing')}
               className="btn-primary px-7 py-3 rounded-2xl font-bold text-sm shadow-lg"
             >
-              Consultar Planos
+              Receber Contato
             </button>
           </div>
 
@@ -85,9 +80,7 @@ const Header: React.FC = () => {
             ) : (
               <Link to="/" className="block w-full text-left px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-brand-800 rounded-xl">Voltar ao Início</Link>
             )}
-            <Link to="/gerador-contrato" className="block px-3 py-3 text-base font-medium text-brand-400 hover:text-white hover:bg-brand-800 rounded-xl">
-              Gerar Contrato IA
-            </Link>
+            {/* Link mobile Gerar Contrato ocultado */}
           </div>
         </div>
       )}
