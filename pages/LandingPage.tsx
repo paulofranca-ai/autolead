@@ -308,7 +308,8 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Lead Capture Form */}
+            {/* Lead Capture Form - Hidden for now but ready to use */}
+            {false && (
             <div className="bg-gradient-to-b from-brand-900/80 to-brand-950/80 border-2 border-brand-600 rounded-3xl p-8 shadow-2xl shadow-brand-900/50 relative w-full">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-600 text-white text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg whitespace-nowrap">
                 Vagas Limitadas
@@ -398,6 +399,7 @@ const LandingPage: React.FC = () => {
                 </p>
               </form>
             </div>
+            )}
 
           </div>
         </div>
