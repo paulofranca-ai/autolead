@@ -167,24 +167,13 @@ const LandingPage: React.FC = () => {
             >
               Converse com a Trinity
             </button>
+            <button 
+              onClick={() => window.open('https://loja.autolead.site', '_blank')}
+              className="btn-outline w-full sm:w-auto px-10 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 hover:shadow-lg backdrop-blur-md text-sm uppercase tracking-wide"
+            >
+              Loja de Agentes
+            </button>
           </div>
-
-          {/* New Video Section in Hero */}
-          <div className="relative max-w-5xl mx-auto mt-12 rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
-             <div className="absolute inset-0 bg-brand-500/10 opacity-0 group-hover:opacity-20 transition-opacity pointer-events-none z-10"></div>
-             <div className="relative aspect-video bg-black">
-                <iframe 
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/Arv9cMfd-Kg" 
-                  title="AUTOLEADS" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
-                  allowFullScreen
-                ></iframe>
-             </div>
-          </div>
-
         </div>
       </section>
 
@@ -216,62 +205,6 @@ const LandingPage: React.FC = () => {
               <p className="text-4xl font-extrabold text-brand-500 mb-2 group-hover:text-white transition-colors drop-shadow-sm">+400</p>
               <p className="text-[10px] text-gray-400 uppercase tracking-wider leading-tight px-2">Veículos vendidos em apenas um dos clientes (2 anos)</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Video Highlight Section (Shorts) */}
-      <section className="py-20 relative z-10 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24">
-            
-            {/* Text Side */}
-            <div className="order-2 md:order-1 max-w-lg text-center md:text-left">
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-brand-900/30 border border-brand-500/20">
-                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-                 <span className="text-brand-300 font-bold tracking-widest text-[10px] uppercase">Bastidores da Operação</span>
-              </div>
-              
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-                Resultados que você <br />
-                <span className="text-brand-500">pode ver.</span>
-              </h2>
-              
-              <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                Não ficamos apenas na teoria. Confira na prática como nossa metodologia de tráfego e produção de conteúdo transforma o dia a dia das revendas parceiras.
-              </p>
-
-              <button 
-                 onClick={() => window.open('https://t.me/VirtualPlaceIAbot', '_blank')}
-                 className="text-brand-400 font-bold uppercase tracking-wider text-sm hover:text-white transition-colors flex items-center gap-2 mx-auto md:mx-0 group"
-              >
-                Converse com a Trinity
-                <ChevronDown className="rotate-[-90deg] group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-
-            {/* Video Side - Phone Mockup */}
-            <div className="order-1 md:order-2 relative group">
-              <div className="absolute -inset-4 bg-gradient-to-tr from-brand-600 to-brand-400 rounded-[3rem] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000 animate-pulse-gold"></div>
-              
-              <div className="relative w-[300px] h-[533px] bg-black rounded-[2.5rem] border-[8px] border-brand-950 shadow-2xl overflow-hidden transform transition-transform hover:scale-[1.02] duration-500">
-                <iframe 
-                  width="300" 
-                  height="533" 
-                  src="https://www.youtube.com/embed/t93fNnIL0v0" 
-                  title="Depoimento Português Play" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
-                  allowFullScreen
-                  className="w-full h-full object-cover"
-                ></iframe>
-                
-                {/* Phone Notch/Bar overlay */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-brand-950 rounded-b-xl z-20 pointer-events-none"></div>
-              </div>
-            </div>
-
           </div>
         </div>
       </section>

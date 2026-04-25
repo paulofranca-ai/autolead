@@ -43,7 +43,7 @@ const Header: React.FC = () => {
             {isHome ? (
               <>
                 <button onClick={() => scrollToSection('features')} className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Serviços</button>
-                <button onClick={() => scrollToSection('pricing')} className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Planos</button>
+                <button onClick={() => scrollToSection('pricing')} className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Consultoria</button>
                 <button onClick={() => scrollToSection('faq')} className="text-gray-300 hover:text-white transition-colors text-sm font-medium">FAQ</button>
               </>
             ) : (
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
              {isHome ? (
               <>
                 <button onClick={() => scrollToSection('features')} className="block w-full text-left px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-brand-800 rounded-xl">Serviços</button>
-                <button onClick={() => scrollToSection('pricing')} className="block w-full text-left px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-brand-800 rounded-xl">Planos</button>
+                <button onClick={() => scrollToSection('pricing')} className="block w-full text-left px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-brand-800 rounded-xl">Consultoria</button>
               </>
             ) : (
               <Link to="/" className="block w-full text-left px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-brand-800 rounded-xl">Voltar ao Início</Link>
