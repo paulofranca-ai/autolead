@@ -162,10 +162,10 @@ const LandingPage: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
             <button 
-              onClick={scrollToPricing}
+              onClick={() => window.open('https://t.me/VirtualPlaceIAbot', '_blank')}
               className="btn-primary w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-white uppercase tracking-wide text-sm"
             >
-              RECEBER CONTATO DO ESPECIALISTA
+              Converse com a Trinity
             </button>
           </div>
 
@@ -242,10 +242,10 @@ const LandingPage: React.FC = () => {
               </p>
 
               <button 
-                 onClick={scrollToPricing}
+                 onClick={() => window.open('https://t.me/VirtualPlaceIAbot', '_blank')}
                  className="text-brand-400 font-bold uppercase tracking-wider text-sm hover:text-white transition-colors flex items-center gap-2 mx-auto md:mx-0 group"
               >
-                Quero esses resultados
+                Converse com a Trinity
                 <ChevronDown className="rotate-[-90deg] group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
