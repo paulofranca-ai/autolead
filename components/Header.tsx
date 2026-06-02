@@ -53,7 +53,7 @@ const Header: React.FC = () => {
             {/* Botão Gerar Contrato ocultado conforme solicitação */}
 
             <button 
-              onClick={() => window.open('https://t.me/VirtualPlaceIAbot', '_blank')}
+              onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
               className="btn-primary px-7 py-3 rounded-2xl font-bold text-sm shadow-lg uppercase"
             >
               Converse com a Trinity

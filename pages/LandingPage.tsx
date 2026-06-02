@@ -162,7 +162,7 @@ const LandingPage: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
             <button 
-              onClick={() => window.open('https://t.me/VirtualPlaceIAbot', '_blank')}
+              onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
               className="btn-primary w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-white uppercase tracking-wide text-sm"
             >
               Converse com a Trinity
