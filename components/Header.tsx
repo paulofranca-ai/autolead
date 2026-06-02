@@ -56,7 +56,7 @@ const Header: React.FC = () => {
               onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
               className="btn-primary px-7 py-3 rounded-2xl font-bold text-sm shadow-lg uppercase"
             >
-              Converse com a Trinity
+              CONVERSE COM NOSSA VENDEDORA DE IA
             </button>
           </div>
 

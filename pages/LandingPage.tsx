@@ -165,7 +165,7 @@ const LandingPage: React.FC = () => {
               onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
               className="btn-primary w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-white uppercase tracking-wide text-sm"
             >
-              Converse com a Trinity
+              CONVERSE COM NOSSA VENDEDORA DE IA
             </button>
             <button 
               onClick={() => window.open('https://loja.autolead.site', '_blank')}
