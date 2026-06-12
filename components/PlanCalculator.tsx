@@ -3,61 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { 
   CheckCircle2, 
   Target, 
-  MessageSquare, 
   Sparkles, 
   ShieldCheck, 
   ArrowRight,
+  Flame,
+  Timer,
+  Zap,
+  Bot,
+  MessageSquare,
+  TrendingUp,
   HelpCircle
 } from 'lucide-react';
 
-interface PricingItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  period: 'mensal' | 'único';
-  fixed: boolean;
-}
-
-const planOptions: PricingItem[] = [
-  {
-    id: 'trafego',
-    name: 'AutoLeads Anúncios',
-    description: 'Gestão de anúncios patrocinados completa + Sistema de Rastreamento das conversas.',
-    price: 1500,
-    period: 'mensal',
-    fixed: true, // Essencial, always selected
-  },
-  {
-    id: 'social_media',
-    name: 'Social Media',
-    description: 'Postagem e edição de vídeos e fotos com base na estratégia e quantia apresentado anteriormente.',
-    price: 2000,
-    period: 'mensal',
-    fixed: false,
-  },
-  {
-    id: 'crm',
-    name: 'CRM - WhatsApp & IA',
-    description: 'CRM Completo com Rastreamento de WhatsApp para até 10 números + Atendimento de IA incluso (consulte taxas extras para conexões adicionais).',
-    price: 3397,
-    period: 'mensal',
-    fixed: false,
-  },
-  {
-    id: 'suporte',
-    name: 'Suporte Dedicado',
-    description: 'Atendimento prioritário premium e 100% humanizado via grupo de WhatsApp para suporte operacional.',
-    price: 0,
-    period: 'mensal',
-    fixed: true,
-  }
-];
-
 export const PlanCalculator: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedIds, setSelectedIds] = useState<string[]>(['trafego', 'suporte']);
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({ trafego: 1, social_media: 1 });
+  const [includeIA, setIncludeIA] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -70,28 +30,9 @@ export const PlanCalculator: React.FC = () => {
     carros_mes: ''
   });
 
-  const handleToggle = (id: string, fixed: boolean) => {
-    if (fixed) return; // Cannot toggle fixed items
-    setSelectedIds(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id) 
-        : [...prev, id]
-    );
-  };
-
-  const calculateTotalPrice = () => {
-    return planOptions
-      .filter(item => selectedIds.includes(item.id))
-      .reduce((sum, item) => {
-        const qty = quantities[item.id] || 1;
-        return sum + (item.price * qty);
-      }, 0);
-  };
-
-  const calculateUniqueSetupValue = () => {
-    // If they purchase CRM but want full setup, we represent the optional setup fee
-    return selectedIds.includes('crm') ? 950 : 0;
-  };
+  const getBasePrice = () => 2700;
+  const getIAPrice = () => 300;
+  const getTotalPrice = () => getBasePrice() + (includeIA ? getIAPrice() : 0);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -114,7 +55,6 @@ export const PlanCalculator: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear errors upon typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -126,12 +66,29 @@ export const PlanCalculator: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Format WhatsApp Number into +55...
     let cleanWhatsapp = formData.whatsapp.replace(/\D/g, '');
     if (cleanWhatsapp && !cleanWhatsapp.startsWith('55')) {
       cleanWhatsapp = '55' + cleanWhatsapp;
     }
     const formattedWhatsapp = cleanWhatsapp ? '+' + cleanWhatsapp : '';
+
+    const checkoutItems = [
+      {
+        name: "Plano Único AutoLeads (Anúncios + CRM WhatsApp para 10 atendentes)",
+        description: "Gestão completa de tráfego (Meta/Google Ads), CRM unificado, rastreamento de conversões e suporte VIP.",
+        price: getBasePrice(),
+        quantity: 1
+      }
+    ];
+
+    if (includeIA) {
+      checkoutItems.push({
+        name: "Assistente de Atendimento Inteligente de IA (Trinity)",
+        description: "Robô inteligente humanizado respondendo leads 24/7 de forma rápida e automática.",
+        price: getIAPrice(),
+        quantity: 1
+      });
+    }
 
     const leadData = {
       nome: formData.nome,
@@ -139,15 +96,8 @@ export const PlanCalculator: React.FC = () => {
       email: formData.email,
       orcamento: formData.orcamento,
       carros_mes: formData.carros_mes,
-      plano_customizado: planOptions
-        .filter(item => selectedIds.includes(item.id))
-        .map(i => {
-          const qty = quantities[i.id] || 1;
-          const showQty = (i.id === 'trafego' || i.id === 'social_media') && qty > 1;
-          return `${i.name}${showQty ? ` (${qty}x)` : ''} (R$ ${i.price * qty})`;
-        })
-        .join(', '),
-      total_estimado: `R$ ${calculateTotalPrice()}/mês`,
+      plano_customizado: checkoutItems.map(i => `${i.name} (R$ ${i.price})`).join(', '),
+      total_estimado: `R$ ${getTotalPrice()}/mês`,
       data_hora: new Date().toLocaleString('pt-BR')
     };
 
@@ -168,35 +118,7 @@ export const PlanCalculator: React.FC = () => {
         console.error("Incapaz de registrar planilha directamente:", sheetError);
       }
 
-      // 2. Prepare checkout options representing the smart selected list of products
-      const checkoutItems = planOptions
-        .filter(item => selectedIds.includes(item.id))
-        .map(p => {
-          const qty = quantities[p.id] || 1;
-          const displayPrice = p.price;
-          const displayName = (p.id === 'trafego' || p.id === 'social_media') && qty > 1 
-            ? `${p.name} (${qty}x)` 
-            : p.name;
-          return {
-            name: displayName,
-            description: p.description,
-            price: displayPrice,
-            quantity: qty
-          };
-        });
-
-      // If setup is selected, append that item
-      const setupCost = calculateUniqueSetupValue();
-      if (setupCost > 0) {
-        checkoutItems.push({
-          name: "Taxa de Setup Único (CRM & IA)",
-          description: "Configuração do servidor, ativação de chaves e setup inicial.",
-          price: setupCost,
-          quantity: 1
-        });
-      }
-
-      // 3. Request our Express proxy backend to establish the Stripe Checkout redirection
+      // 2. Request our Express proxy backend to establish the Stripe Checkout redirection
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -204,7 +126,7 @@ export const PlanCalculator: React.FC = () => {
         },
         body: JSON.stringify({
           items: checkoutItems,
-          successUrl: `${window.location.origin}/#/obrigado?stripe_session_id={CHECKOUT_SESSION_ID}&plan_total=${calculateTotalPrice()}&items=${encodeURIComponent(JSON.stringify(checkoutItems))}`,
+          successUrl: `${window.location.origin}/#/obrigado?stripe_session_id={CHECKOUT_SESSION_ID}&plan_total=${getTotalPrice()}&items=${encodeURIComponent(JSON.stringify(checkoutItems))}`,
           cancelUrl: `${window.location.origin}/`
         })
       });
@@ -215,7 +137,6 @@ export const PlanCalculator: React.FC = () => {
 
       const resData = await response.json();
       
-      // Redirect either to Stripe Sandbox or Mock Redirection url
       if (resData.url) {
         window.location.href = resData.url;
       } else {
@@ -229,137 +150,150 @@ export const PlanCalculator: React.FC = () => {
     }
   };
 
-  const totalPrice = calculateTotalPrice();
-  const setupFee = calculateUniqueSetupValue();
-
   return (
     <div className="w-full relative z-10">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Interactive Selector */}
+        {/* Left Column: Benefits & Mental Triggers */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          <div className="bg-brand-900/10 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
-            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-brand-400" />
-              1. Monte seu Combo Inteligente
-            </h3>
-            <p className="text-gray-400 text-xs mb-6">
-              Marque os itens que deseja adicionar ao ecossistema da sua concessionária:
-            </p>
-
-            <div className="flex flex-col gap-4">
-              {planOptions.map((option) => {
-                const isSelected = selectedIds.includes(option.id);
-                return (
-                  <div
-                    key={option.id}
-                    onClick={() => handleToggle(option.id, option.fixed)}
-                    className={`p-4 rounded-2xl border transition-all cursor-pointer select-none flex flex-col gap-3 ${
-                      isSelected 
-                        ? 'bg-brand-900/30 border-brand-500 shadow-md shadow-brand-500/5' 
-                        : 'bg-black/20 border-white/5 hover:border-white/15'
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="pt-0.5">
-                        <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all ${
-                          isSelected 
-                            ? 'bg-brand-500 border-brand-500 text-white' 
-                            : 'border-gray-600 bg-black/45'
-                        }`}>
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-white" />}
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
-                          <span className="font-bold text-sm text-white flex items-center gap-2">
-                            {option.name}
-                            {option.fixed && (
-                              <span className="text-[10px] bg-brand-500/20 text-brand-300 font-bold px-2 py-0.5 rounded-full uppercase">
-                                {option.id === 'suporte' ? 'Incluso' : 'Essencial'}
-                              </span>
-                            )}
-                          </span>
-                          <span className="text-sm font-extrabold text-brand-400 shrink-0">
-                            {option.price === 0 ? 'Grátis' : `R$ ${option.price.toLocaleString('pt-BR')}/${option.period === 'mensal' ? 'mês' : 'setup'}`}
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">
-                          {option.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Extra tools / control buttons */}
-                    {isSelected && (
-                      <div className="pl-9 pr-2">
-                        {/* Traffic quantities counter */}
-                        {option.id === 'trafego' && (
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1 pt-2 border-t border-white/5" onClick={(e) => e.stopPropagation()}>
-                            <span className="text-xs text-brand-300 font-medium">Quantidade de Fontes de Tráfego:</span>
-                            <div className="flex items-center gap-3">
-                              <button
-                                type="button"
-                                disabled={(quantities['trafego'] || 1) <= 1}
-                                onClick={() => setQuantities(prev => ({ ...prev, trafego: Math.max(1, (prev.trafego || 1) - 1) }))}
-                                className="w-6 h-6 rounded bg-brand-500/20 text-white flex items-center justify-center font-bold text-xs hover:bg-brand-500/40 border border-brand-500/30 disabled:opacity-30 transition-all select-none"
-                              >
-                                -
-                              </button>
-                              <span className="text-sm font-extrabold text-white w-4 text-center">
-                                {quantities['trafego'] || 1}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => setQuantities(prev => ({ ...prev, trafego: (prev.trafego || 1) + 1 }))}
-                                className="w-6 h-6 rounded bg-brand-500/20 text-white flex items-center justify-center font-bold text-xs hover:bg-brand-500/40 border border-brand-500/30 transition-all select-none"
-                              >
-                                +
-                              </button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Social Media quantities counter */}
-                        {option.id === 'social_media' && (
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1 pt-2 border-t border-white/5" onClick={(e) => e.stopPropagation()}>
-                            <span className="text-xs text-brand-300 font-medium">Quantidade de Perfis/Plataformas:</span>
-                            <div className="flex items-center gap-3">
-                              <button
-                                type="button"
-                                disabled={(quantities['social_media'] || 1) <= 1}
-                                onClick={() => setQuantities(prev => ({ ...prev, social_media: Math.max(1, (prev.social_media || 1) - 1) }))}
-                                className="w-6 h-6 rounded bg-brand-500/20 text-white flex items-center justify-center font-bold text-xs hover:bg-brand-500/40 border border-brand-500/30 disabled:opacity-30 transition-all select-none"
-                              >
-                                -
-                              </button>
-                              <span className="text-sm font-extrabold text-white w-4 text-center">
-                                {quantities['social_media'] || 1}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => setQuantities(prev => ({ ...prev, social_media: (prev.social_media || 1) + 1 }))}
-                                className="w-6 h-6 rounded bg-brand-500/20 text-white flex items-center justify-center font-bold text-xs hover:bg-brand-500/40 border border-brand-500/30 transition-all select-none"
-                              >
-                                +
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+          
+          {/* Main Plan Card Presentation */}
+          <div className="bg-gradient-to-br from-brand-950/70 to-black/85 border border-brand-500/20 rounded-3xl p-8 backdrop-blur-md relative overflow-hidden shadow-2xl">
+            {/* Scarcity Badge */}
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-brand-500/10 border border-brand-500/30 text-brand-300 font-bold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+              <Timer className="w-3.5 h-3.5 text-brand-400" />
+              Apenas 3 Vagas Disponíveis Este Mês
             </div>
 
-            {setupFee > 0 && (
-              <div className="mt-4 p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-between">
-                <span className="text-xs text-orange-200 font-medium">✨ Taxa de Setup Único Adicionada (CRM & IA):</span>
-                <span className="text-xs font-bold text-orange-300">R$ {setupFee.toLocaleString('pt-BR')} (Único)</span>
+            <div className="mb-6 mt-1 flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest flex items-center gap-1">
+                <Flame className="w-3 h-3 text-brand-500 fill-brand-500" />
+                Plano Ouro de Performance Completa
+              </span>
+              <h3 className="text-3xl font-extrabold text-white tracking-tight">
+                Plano Único AutoLeads
+              </h3>
+            </div>
+
+            <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+              O ecossistema definitivo que une anúncios de alta tração com um sistema impecável de vendas e organização pelo WhatsApp. Perfeito para concessionárias modernas que querem parar de perder leads e explodir suas vendas.
+            </p>
+
+            {/* Price Presentation */}
+            <div className="bg-black/45 border border-white/5 rounded-2xl p-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Investimento mensal recorrente</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-bold text-gray-300">R$</span>
+                  <span className="text-4xl font-black text-white leading-none">2.700</span>
+                  <span className="text-xs font-bold text-brand-400">/mês</span>
+                </div>
               </div>
-            )}
+              <div className="flex flex-col gap-1 text-xs text-gray-400">
+                <div className="flex items-center gap-1.5 text-brand-300 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-brand-500" /> Sem fidelidade abusiva
+                </div>
+                <div className="flex items-center gap-1.5 text-brand-300 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-brand-500" /> Suporte VIP incluso
+                </div>
+              </div>
+            </div>
+
+            {/* List of Benefits (Mental Triggers Included) */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-brand-400" />
+                Tudo que está incluso neste plano:
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-brand-500/15 border border-brand-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <Target className="w-3 h-3 text-brand-400" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-white">AutoLeads Anúncios</h5>
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-0.5">
+                      Gestão completa patrocinada (Meta + Google Ads) focada nos veículos com melhor margem do seu pátio.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-brand-500/15 border border-brand-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <MessageSquare className="w-3 h-3 text-brand-400" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-white">CRM - 10 Conexões de WhatsApp</h5>
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-0.5">
+                      Software exclusivo de vendas automotivas integrando até 10 conexões de WhatsApp simultâneas para otimizar seu funil.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-brand-500/15 border border-brand-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <Zap className="w-3 h-3 text-brand-400" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-white">Rastreamento Avançado de Leads</h5>
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-0.5">
+                      Saiba exatamente qual vídeo, story ou anúncio gerou cada conversa em seu WhatsApp.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-5 h-5 rounded-full bg-brand-500/15 border border-brand-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <TrendingUp className="w-3 h-3 text-brand-400" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-white">Suporte Premium e Grupo VIP</h5>
+                    <p className="text-[11px] text-gray-400 leading-relaxed mt-0.5">
+                      Atendimento preferencial de equipe tática por WhatsApp para suporte rápido do dia a dia.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Optional AI Toggle */}
+            <div className="mt-8 pt-6 border-t border-white/5">
+              <div 
+                onClick={() => setIncludeIA(p => !p)}
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 select-none ${
+                  includeIA 
+                    ? 'bg-brand-500/10 border-brand-500/50 shadow-md shadow-brand-500/5' 
+                    : 'bg-black/45 border-white/5 hover:border-white/10'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all shrink-0 ${
+                    includeIA 
+                      ? 'bg-brand-500 border-brand-500 text-white' 
+                      : 'border-gray-600 bg-black/45'
+                  }`}>
+                    {includeIA && <CheckCircle2 className="w-4 h-4 text-white" />}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Bot className="w-4 h-4 text-brand-400" />
+                    <div>
+                      <h5 className="text-xs font-bold text-white flex items-center gap-2">
+                        Atendimento com IA (Opcional - Trinity Bot)
+                        <span className="text-[9px] bg-brand-500/20 text-brand-300 font-bold px-2 py-0.5 rounded-full uppercase">VIP</span>
+                      </h5>
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        Agente de IA humanizado respondendo, qualificando e agendando leads rápidos 24h por dia.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span className="text-sm font-extrabold text-brand-400 shrink-0">
+                  + R$ 300/mês
+                </span>
+              </div>
+            </div>
+
           </div>
 
           {/* External platforms & services links based on user requests */}
@@ -406,16 +340,16 @@ export const PlanCalculator: React.FC = () => {
           
           <div className="bg-white/5 border border-white/5 rounded-2xl p-5 text-center">
             <p className="text-xs text-gray-400">
-              💡 <strong>Como funciona o Stripe?</strong> Ao preencher a aplicação e prosseguir, você será redirecionado para a infraestrutura segura e encriptada de pagamentos do Stripe para confirmar sua assinatura inteligente com cartão de crédito ou boleto/PIX.
+              💡 <strong>Como funciona o Stripe?</strong> Ao preencher os dados ao lado, você será redirecionado para o ambiente criptografado e seguro do Stripe para validar sua contratação no valor total exato.
             </p>
           </div>
         </div>
 
-        {/* Right Column: Information Forms + Stripe Checkout Details */}
+        {/* Right Column: Lead Form & Stripe Checkout */}
         <div className="lg:col-span-5">
           <div className="bg-gradient-to-b from-brand-900/80 to-brand-950/80 border-2 border-brand-600 rounded-3xl p-6 shadow-2xl shadow-brand-900/50 relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-600 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
-              2. Preencha seus Dados e Inicie
+              Preencha Seus Dados para Contratar Já
             </div>
 
             <form onSubmit={handleCheckoutSubmit} className="space-y-4 mt-4">
@@ -501,23 +435,26 @@ export const PlanCalculator: React.FC = () => {
                 </div>
               </div>
 
-              {/* Live Summary values */}
+              {/* Order Summary */}
               <div className="p-4 bg-black/45 rounded-2xl border border-white/5 space-y-2 mt-4">
-                <span className="text-[10px] font-bold uppercase text-brand-400 tracking-wider">Resumo do Pedido</span>
+                <span className="text-[10px] font-bold uppercase text-brand-400 tracking-wider">Resumo de Ativação</span>
+                
                 <div className="flex justify-between items-center text-xs text-gray-300">
-                  <span>Plano Configurado:</span>
-                  <span className="font-bold text-white">R$ {totalPrice.toLocaleString('pt-BR')}/mês</span>
+                  <span>Plano Premium Principal:</span>
+                  <span className="font-bold text-white">R$ {getBasePrice().toLocaleString('pt-BR')}/mês</span>
                 </div>
-                {setupFee > 0 && (
-                  <div className="flex justify-between items-center text-xs text-gray-300 pt-1 border-t border-white/5">
-                    <span>Taxa de Setup Inicial:</span>
-                    <span className="font-bold text-white">R$ {setupFee.toLocaleString('pt-BR')}</span>
+
+                {includeIA && (
+                  <div className="flex justify-between items-center text-xs text-brand-300 pt-1 border-t border-white/5">
+                    <span>Opcional: Robô IA Trinity:</span>
+                    <span className="font-bold text-white">R$ {getIAPrice().toLocaleString('pt-BR')}/mês</span>
                   </div>
                 )}
+
                 <div className="flex justify-between items-center text-sm pt-2 border-t border-white/10 font-extrabold text-white">
-                  <span>Total à Pagar:</span>
-                  <span className="text-brand-400 text-base">
-                    R$ {(totalPrice + setupFee).toLocaleString('pt-BR')}
+                  <span>Valor Total da Assinatura:</span>
+                  <span className="text-brand-400 text-lg">
+                    R$ {getTotalPrice().toLocaleString('pt-BR')}/mês
                   </span>
                 </div>
               </div>
@@ -525,13 +462,13 @@ export const PlanCalculator: React.FC = () => {
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full py-4 rounded-xl font-bold text-white uppercase tracking-wider text-sm shadow-xl mt-4 flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="btn-primary w-full py-4 rounded-xl font-bold text-white uppercase tracking-wider text-sm shadow-xl mt-4 flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? (
                   <span className="animate-pulse">Configurando Checkout...</span>
                 ) : (
                   <>
-                    <span>Contratar e Assinar via Stripe</span>
+                    <span>Contratar via Stripe</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -539,7 +476,7 @@ export const PlanCalculator: React.FC = () => {
 
               <div className="flex items-center justify-center gap-1.5 text-[10px] text-gray-500 mt-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-brand-400" />
-                <span>Garantia de 7 dias e ambiente 100% criptografado pelo Stripe.</span>
+                <span>Garantia total de 7 dias e segurança Stripe Encryption.</span>
               </div>
             </form>
           </div>
