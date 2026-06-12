@@ -53,10 +53,10 @@ const Header: React.FC = () => {
             {/* Botão Gerar Contrato ocultado conforme solicitação */}
 
             <button 
-              onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
-              className="btn-primary px-7 py-3 rounded-2xl font-bold text-sm shadow-lg uppercase"
+              onClick={() => scrollToSection('pricing')}
+              className="btn-primary px-7 py-3 rounded-2xl font-bold text-sm shadow-lg uppercase transition-transform hover:scale-105"
             >
-              CONVERSE COM NOSSA VENDEDORA DE IA
+              CONTRATE JÁ
             </button>
           </div>
 

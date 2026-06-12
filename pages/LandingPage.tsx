@@ -12,6 +12,7 @@ import {
   Car
 } from 'lucide-react';
 import { FaqItem } from '../types';
+import { PlanCalculator } from '../components/PlanCalculator';
 
 const features = [
   {
@@ -160,16 +161,16 @@ const LandingPage: React.FC = () => {
             Unimos inteligência de dados, tráfego pago agressivo e produção audiovisual para escalar suas vendas.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16 col-span-1">
             <button 
-              onClick={() => window.open('https://t.me/autoleadsbrbot', '_blank')}
-              className="btn-primary w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-white uppercase tracking-wide text-sm"
+              onClick={scrollToPricing}
+              className="btn-primary w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-white uppercase tracking-wide text-sm transition-transform hover:scale-105"
             >
-              CONVERSE COM NOSSA VENDEDORA DE IA
+              CONTRATE JÁ
             </button>
             <button 
               onClick={() => window.open('https://loja.autolead.site', '_blank')}
-              className="btn-outline w-full sm:w-auto px-10 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 hover:shadow-lg backdrop-blur-md text-sm uppercase tracking-wide"
+              className="btn-outline w-full sm:w-auto px-10 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 hover:shadow-lg backdrop-blur-md text-sm uppercase tracking-wide cursor-pointer"
             >
               Loja de Agentes
             </button>
@@ -285,121 +286,20 @@ const LandingPage: React.FC = () => {
                   </li>
                 </ul>
               </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold text-white mb-6">O que está incluso no Plano Único:</h3>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    "Gestão de Tráfego Pago (Ads)",
-                    "Gestão de Redes Sociais",
-                    "Indicação de Videomaker/Fotógrafo",
-                    "CRM AutoLeads Completo",
-                    "Secretária de IA Integrada",
-                    "Relatórios de Performance",
-                    "Suporte Dedicado",
-                    "Rastreamento de Origem"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-sm text-gray-300 font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-brand-500 shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
 
-            {/* Lead Capture Form - Hidden for now but ready to use */}
-            {false && (
-            <div className="bg-gradient-to-b from-brand-900/80 to-brand-950/80 border-2 border-brand-600 rounded-3xl p-8 shadow-2xl shadow-brand-900/50 relative w-full">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-600 text-white text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg whitespace-nowrap">
-                Vagas Limitadas
-              </div>
-              
-              <div className="text-center mb-8 mt-4">
-                <h3 className="text-2xl font-bold text-white mb-2">Aplicação para Consultoria</h3>
-                <p className="text-gray-400 text-sm">Preencha os dados abaixo para agendar sua consultoria gratuita e descobrir como escalar sua revenda.</p>
-              </div>
-
-              <form onSubmit={handleFormSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Nome Completo</label>
-                  <input 
-                    type="text" 
-                    required
-                    name="nome"
-                    className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                    placeholder="João da Silva"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">WhatsApp (com DDD)</label>
-                    <input 
-                      type="tel" 
-                      required
-                      name="whatsapp"
-                      className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                      placeholder="(11) 99999-9999"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">E-mail</label>
-                    <input 
-                      type="email" 
-                      required
-                      name="email"
-                      className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                      placeholder="joao@revenda.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Orçamento Mensal de Marketing</label>
-                  <select 
-                    required
-                    name="orcamento"
-                    defaultValue=""
-                    className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all appearance-none"
-                  >
-                    <option value="" disabled>Selecione uma opção</option>
-                    <option value="Ate R$ 2.000">Até R$ 2.000</option>
-                    <option value="De R$ 2.000 a R$ 5.000">De R$ 2.000 a R$ 5.000</option>
-                    <option value="De R$ 5.000 a R$ 10.000">De R$ 5.000 a R$ 10.000</option>
-                    <option value="Acima de R$ 10.000">Acima de R$ 10.000</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Quantos carros vende por mês?</label>
-                  <input 
-                    type="number" 
-                    required
-                    name="carros_mes"
-                    min="0"
-                    className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                    placeholder="Ex: 15"
-                  />
-                </div>
-
-                <button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full py-4 rounded-xl font-bold text-white uppercase tracking-wider text-sm shadow-xl mt-4 flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <span className="animate-pulse">Enviando...</span>
-                  ) : (
-                    "Quero Escalar Minhas Vendas"
-                  )}
-                </button>
-                <p className="text-center text-[10px] text-gray-500 mt-4">
-                  Suas informações estão seguras. Não enviamos spam.
+            {/* Interactive Smart Plan Configurator & Secure Stripe Checkout */}
+            <div className="w-full mt-4">
+              <div className="text-center mb-8">
+                <span className="text-brand-400 font-bold tracking-widest text-[10px] uppercase bg-brand-900/50 px-3.5 py-1.5 rounded-full">
+                  Configurador de Planos Inteligentes
+                </span>
+                <p className="text-gray-400 text-sm mt-3 max-w-xl mx-auto">
+                  Customize os módulos operacionais da sua revenda em tempo real. Veja a simulação financeira abaixo e contrate sua operação instantaneamente pelo Stripe.
                 </p>
-              </form>
+              </div>
+              <PlanCalculator />
             </div>
-            )}
 
           </div>
         </div>
