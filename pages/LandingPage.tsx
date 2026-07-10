@@ -240,10 +240,10 @@ const LandingPage: React.FC = () => {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <span className="text-brand-400 font-bold tracking-widest text-xs uppercase bg-brand-900/50 px-3 py-1 rounded-full">Plano Único: Aceleração Total</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold mt-4 mb-6 text-white">Tudo que sua revenda precisa para dominar o mercado.</h2>
+            <span className="text-brand-400 font-bold tracking-widest text-xs uppercase bg-brand-900/50 px-3 py-1 rounded-full">Planos de Assessoria & Consultoria</span>
+            <h2 className="text-3xl md:text-5xl font-extrabold mt-4 mb-6 text-white">Escolha a solução ideal para acelerar o pátio da sua revenda.</h2>
             <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-              Sem letras miúdas. Um ecossistema completo focado em colocar <strong className="text-white">mais dinheiro no seu bolso</strong> com <strong className="text-white">menos esforço</strong>.
+              Estratégias sob medida para alavancar suas vendas físicas e digitais com assessores táticos e inteligência artificial de ponta.
             </p>
           </div>
 
@@ -292,10 +292,10 @@ const LandingPage: React.FC = () => {
             <div className="w-full mt-4">
               <div className="text-center mb-8">
                 <span className="text-brand-400 font-bold tracking-widest text-[10px] uppercase bg-brand-900/50 px-3.5 py-1.5 rounded-full">
-                  Configurador de Planos Inteligentes
+                  Configurador Personalizado de Operações
                 </span>
                 <p className="text-gray-400 text-sm mt-3 max-w-xl mx-auto">
-                  Customize os módulos operacionais da sua revenda em tempo real. Veja a simulação financeira abaixo e contrate sua operação instantaneamente pelo Stripe.
+                  Monte a estrutura ideal para sua revenda selecionando os canais de tráfego pago e módulos adicionais que desejar. Preencha seus dados para finalizar e falar direto no WhatsApp.
                 </p>
               </div>
               <PlanCalculator />
